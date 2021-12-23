@@ -770,7 +770,7 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
       setState(() {
         _currentPos = v;
         // 后加入，处理fijkplay reset后状态对不上的bug，
-        _playing = true;
+        _playing = player.state == FijkState.started;
         _prepared = true;
       });
     });
@@ -808,7 +808,7 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
         prepared != _prepared ||
         exception != _exception) {
       setState(() {
-        _playing = playing;
+        _playing = player.state == FijkState.started;
         _prepared = prepared;
         _exception = exception;
       });
@@ -877,6 +877,9 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
 
   _onHorizontalDragEnd(detills) {
     player.seekTo(_dargPos.inMilliseconds);
+    setState(() {
+      _playing = player.state == FijkState.started;
+    });
     this.setState(() {
       _isHorizontalMove = false;
       _isTouch = false;
@@ -974,6 +977,9 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
   }
 
   void _playOrPause() {
+    setState(() {
+      _playing = player.state == FijkState.started;
+    });
     if (_playing == true) {
       player.pause();
     } else {
@@ -1139,6 +1145,10 @@ class _buildGestureDetectorState extends State<_buildGestureDetector> {
                                 onChangeEnd: (v) {
                                   setState(() {
                                     player.seekTo(v.toInt());
+                                    setState(() {
+                                      _playing =
+                                          player.state == FijkState.started;
+                                    });
                                     print("seek to $v");
                                     _currentPos = Duration(
                                         milliseconds: _seekPos.toInt());
